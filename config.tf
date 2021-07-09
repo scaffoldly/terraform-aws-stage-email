@@ -1,9 +1,20 @@
 terraform {
   required_version = ">= 0.15"
+  experiments      = [module_variable_optional_attrs]
   required_providers {
-    # aws = {
-    #   source  = "hashicorp/aws"
-    #   version = "~> 3.33.0"
-    # }
+    aws = {
+      source                = "hashicorp/aws"
+      version               = "~> 3.33.0"
+      configuration_aliases = [aws.dns]
+    }
+
+    time = {
+      source  = "hashicorp/time"
+      version = "~> 0.7.2"
+    }
   }
+}
+
+provider "aws" {
+  alias = "dns"
 }

@@ -127,6 +127,16 @@ resource "aws_ses_identity_notification_topic" "delivery" {
   include_original_headers = true
 }
 
+resource "aws_route53_record" "mail_domain_mx" {
+  zone_id = var.dns_domain_id
+  name    = var.mail_domain
+  type    = "MX"
+  ttl     = "300"
+  records = ["10 inbound-smtp.${data.aws_region.current.name}.amazonaws.com"]
+
+  provider = aws.dns
+}
+
 resource "aws_route53_record" "mail_from_mx" {
   zone_id = var.dns_domain_id
   name    = aws_ses_domain_mail_from.mail_from.mail_from_domain

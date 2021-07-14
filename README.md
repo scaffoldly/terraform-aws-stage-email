@@ -107,5 +107,7 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_no_reply_rule_name"></a> [no\_reply\_rule\_name](#output\_no\_reply\_rule\_name) | n/a |
 <!-- END_TF_DOCS -->

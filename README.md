@@ -49,17 +49,14 @@ module "stage" {
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.15 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 3.33.0 |
-| <a name="requirement_time"></a> [time](#requirement\_time) | ~> 0.7.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0.0, < 1.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.33.0 |
-| <a name="provider_aws.dns"></a> [aws.dns](#provider\_aws.dns) | 3.33.0 |
-| <a name="provider_time"></a> [time](#provider\_time) | 0.7.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | 3.57.0 |
+| <a name="provider_aws.dns"></a> [aws.dns](#provider\_aws.dns) | 3.57.0 |
 
 ## Modules
 
@@ -77,8 +74,9 @@ No modules.
 | [aws_ses_configuration_set.configuration_set](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_configuration_set) | resource |
 | [aws_ses_domain_dkim.dkim](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_domain_dkim) | resource |
 | [aws_ses_domain_identity.identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_domain_identity) | resource |
+| [aws_ses_domain_identity_verification.domain_identity_verification](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_domain_identity_verification) | resource |
 | [aws_ses_domain_mail_from.mail_from](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_domain_mail_from) | resource |
-| [aws_ses_email_identity.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_email_identity) | resource |
+| [aws_ses_email_identity.identity](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_email_identity) | resource |
 | [aws_ses_event_destination.sns_destination](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_event_destination) | resource |
 | [aws_ses_event_destination.sns_destination_bounce](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_event_destination) | resource |
 | [aws_ses_event_destination.sns_destination_complaint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ses_event_destination) | resource |
@@ -90,25 +88,27 @@ No modules.
 | [aws_sns_topic.complaint](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic.events](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic) | resource |
 | [aws_sns_topic_subscription.root_email_compaints](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_subscription) | resource |
-| [time_sleep.wait_60_seconds](https://registry.terraform.io/providers/hashicorp/time/latest/docs/resources/sleep) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.event_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
+| [aws_route53_zone.zone](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/route53_zone) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_dns_domain_id"></a> [dns\_domain\_id](#input\_dns\_domain\_id) | The Route53 domain ID | `string` | n/a | yes |
-| <a name="input_dns_provider"></a> [dns\_provider](#input\_dns\_provider) | The DNS provider (Route53 currently only supported) | `string` | n/a | yes |
-| <a name="input_mail_domain"></a> [mail\_domain](#input\_mail\_domain) | The domain that's been configured to send email | `string` | n/a | yes |
+| <a name="input_domain"></a> [domain](#input\_domain) | The domain for sending/receiving emails | `string` | n/a | yes |
 | <a name="input_root_email"></a> [root\_email](#input\_root\_email) | The AWS account's email address | `string` | n/a | yes |
 | <a name="input_rule_set_name"></a> [rule\_set\_name](#input\_rule\_set\_name) | The active rule set name | `string` | n/a | yes |
 | <a name="input_stage"></a> [stage](#input\_stage) | The stage (e.g. live, nonlive) | `string` | n/a | yes |
+| <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | The subdomain for sending/receiving emails | `string` | n/a | yes |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| <a name="output_no_reply_rule_name"></a> [no\_reply\_rule\_name](#output\_no\_reply\_rule\_name) | n/a |
+| <a name="output_domain"></a> [domain](#output\_domain) | The full domain for this stage |
+| <a name="output_noreply_address"></a> [noreply\_address](#output\_noreply\_address) | n/a |
+| <a name="output_noreply_rule_name"></a> [noreply\_rule\_name](#output\_noreply\_rule\_name) | The receipt rule ID for the noreply address |
+| <a name="output_stage"></a> [stage](#output\_stage) | Re-output of var.stage |
 <!-- END_TF_DOCS -->

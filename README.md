@@ -102,6 +102,7 @@ No modules.
 | <a name="input_rule_set_name"></a> [rule\_set\_name](#input\_rule\_set\_name) | The active rule set name | `string` | n/a | yes |
 | <a name="input_stage"></a> [stage](#input\_stage) | The stage (e.g. live, nonlive) | `string` | n/a | yes |
 | <a name="input_subdomain"></a> [subdomain](#input\_subdomain) | The subdomain for sending/receiving emails | `string` | n/a | yes |
+| <a name="input_subdomain_suffix"></a> [subdomain\_suffix](#input\_subdomain\_suffix) | The (optional) suffix to append to the subdomain | `string` | n/a | yes |
 
 ## Outputs
 

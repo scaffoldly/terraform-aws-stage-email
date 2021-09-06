@@ -8,19 +8,14 @@ variable "root_email" {
   description = "The AWS account's email address"
 }
 
-variable "mail_domain" {
+variable "subdomain" {
   type        = string
-  description = "The domain that's been configured to send email"
+  description = "The subdomain for sending/receiving emails"
 }
 
-variable "dns_provider" {
+variable "domain" {
   type        = string
-  description = "The DNS provider (Route53 currently only supported)"
-}
-
-variable "dns_domain_id" {
-  type        = string
-  description = "The Route53 domain ID"
+  description = "The domain for sending/receiving emails"
 }
 
 variable "rule_set_name" {

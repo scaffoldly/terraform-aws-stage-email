@@ -1,12 +1,21 @@
 data "aws_region" "current" {}
 data "aws_caller_identity" "current" {}
 
-resource "aws_ses_email_identity" "example" {
+data "aws_route53_zone" "zone" {
+  name = var.domain
+}
+
+locals {
+  mail_domain     = "${var.subdomain}.${var.domain}"
+  noreply_address = "no-reply@${local.mail_domain}"
+}
+
+resource "aws_ses_email_identity" "identity" {
   email = var.root_email
 }
 
 resource "aws_ses_domain_identity" "identity" {
-  domain = var.mail_domain
+  domain = local.mail_domain
 }
 
 resource "aws_ses_domain_dkim" "dkim" {
@@ -128,8 +137,8 @@ resource "aws_ses_identity_notification_topic" "delivery" {
 }
 
 resource "aws_route53_record" "mail_domain_mx" {
-  zone_id = var.dns_domain_id
-  name    = var.mail_domain
+  zone_id = data.aws_route53_zone.zone.id
+  name    = local.mail_domain
   type    = "MX"
   ttl     = "300"
   records = ["10 inbound-smtp.${data.aws_region.current.name}.amazonaws.com"]
@@ -138,7 +147,7 @@ resource "aws_route53_record" "mail_domain_mx" {
 }
 
 resource "aws_route53_record" "mail_from_mx" {
-  zone_id = var.dns_domain_id
+  zone_id = data.aws_route53_zone.zone.id
   name    = aws_ses_domain_mail_from.mail_from.mail_from_domain
   type    = "MX"
   ttl     = "600"
@@ -148,7 +157,7 @@ resource "aws_route53_record" "mail_from_mx" {
 }
 
 resource "aws_route53_record" "mail_from_txt" {
-  zone_id = var.dns_domain_id
+  zone_id = data.aws_route53_zone.zone.id
   name    = aws_ses_domain_mail_from.mail_from.mail_from_domain
   type    = "TXT"
   ttl     = "600"
@@ -158,8 +167,8 @@ resource "aws_route53_record" "mail_from_txt" {
 }
 
 resource "aws_route53_record" "verification_record" {
-  zone_id = var.dns_domain_id
-  name    = "_amazonses.${var.mail_domain}"
+  zone_id = data.aws_route53_zone.zone.id
+  name    = "_amazonses.${local.mail_domain}"
   type    = "TXT"
   ttl     = "600"
   records = [aws_ses_domain_identity.identity.verification_token]
@@ -169,8 +178,8 @@ resource "aws_route53_record" "verification_record" {
 
 resource "aws_route53_record" "dkim_record" {
   count   = 3
-  zone_id = var.dns_domain_id
-  name    = "${element(aws_ses_domain_dkim.dkim.dkim_tokens, count.index)}._domainkey.${var.mail_domain}"
+  zone_id = data.aws_route53_zone.zone.id
+  name    = "${element(aws_ses_domain_dkim.dkim.dkim_tokens, count.index)}._domainkey.${local.mail_domain}"
   type    = "CNAME"
   ttl     = "600"
   records = ["${element(aws_ses_domain_dkim.dkim.dkim_tokens, count.index)}.dkim.amazonses.com"]
@@ -178,8 +187,8 @@ resource "aws_route53_record" "dkim_record" {
   provider = aws.dns
 }
 
-resource "time_sleep" "wait_60_seconds" {
-  create_duration = "60s"
+resource "aws_ses_domain_identity_verification" "domain_identity_verification" {
+  domain = aws_ses_domain_identity.identity.id
 
   depends_on = [
     aws_route53_record.verification_record
@@ -189,13 +198,13 @@ resource "time_sleep" "wait_60_seconds" {
 resource "aws_ses_receipt_rule" "bounce_noreply" {
   name          = "${var.stage}-bounce-noreply"
   rule_set_name = var.rule_set_name
-  recipients    = ["no-reply@${var.mail_domain}"]
+  recipients    = [local.noreply_address]
   enabled       = true
   scan_enabled  = true
 
   bounce_action {
     message         = "Mailbox does not exist"
-    sender          = "no-reply@${var.mail_domain}"
+    sender          = local.noreply_address
     smtp_reply_code = "550"
     status_code     = "5.1.1"
     topic_arn       = aws_sns_topic.events.arn
@@ -203,6 +212,6 @@ resource "aws_ses_receipt_rule" "bounce_noreply" {
   }
 
   depends_on = [
-    time_sleep.wait_60_seconds
+    aws_ses_domain_identity_verification.domain_identity_verification
   ]
 }

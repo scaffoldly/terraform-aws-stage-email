@@ -6,7 +6,7 @@ data "aws_route53_zone" "zone" {
 }
 
 locals {
-  mail_domain     = "${var.subdomain}.${var.domain}"
+  mail_domain     = var.subdomain_suffix != "" ? "${var.subdomain}-${var.subdomain_suffix}.${var.domain}" : "${var.subdomain}.${var.domain}"
   noreply_address = "no-reply@${local.mail_domain}"
 }
 

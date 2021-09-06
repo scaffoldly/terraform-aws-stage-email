@@ -13,6 +13,11 @@ variable "subdomain" {
   description = "The subdomain for sending/receiving emails"
 }
 
+variable "subdomain_suffix" {
+  type        = string
+  description = "The (optional) suffix to append to the subdomain"
+}
+
 variable "domain" {
   type        = string
   description = "The domain for sending/receiving emails"

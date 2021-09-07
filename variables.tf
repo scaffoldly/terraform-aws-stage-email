@@ -18,9 +18,9 @@ variable "subdomain_suffix" {
   description = "The (optional) suffix to append to the subdomain"
 }
 
-variable "domain" {
+variable "zone_id" {
   type        = string
-  description = "The domain for sending/receiving emails"
+  description = "The zone ID for the domain"
 }
 
 variable "rule_set_name" {

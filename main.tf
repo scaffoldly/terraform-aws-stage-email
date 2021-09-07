@@ -133,7 +133,7 @@ resource "aws_ses_identity_notification_topic" "delivery" {
 }
 
 resource "aws_route53_record" "mail_domain_mx" {
-  zone_id = var.zone.id
+  zone_id = var.zone_id
   name    = local.mail_domain
   type    = "MX"
   ttl     = "300"
@@ -143,7 +143,7 @@ resource "aws_route53_record" "mail_domain_mx" {
 }
 
 resource "aws_route53_record" "mail_from_mx" {
-  zone_id = var.zone.id
+  zone_id = var.zone_id
   name    = aws_ses_domain_mail_from.mail_from.mail_from_domain
   type    = "MX"
   ttl     = "600"
@@ -153,7 +153,7 @@ resource "aws_route53_record" "mail_from_mx" {
 }
 
 resource "aws_route53_record" "mail_from_txt" {
-  zone_id = var.zone.id
+  zone_id = var.zone_id
   name    = aws_ses_domain_mail_from.mail_from.mail_from_domain
   type    = "TXT"
   ttl     = "600"
@@ -163,7 +163,7 @@ resource "aws_route53_record" "mail_from_txt" {
 }
 
 resource "aws_route53_record" "verification_record" {
-  zone_id = var.zone.id
+  zone_id = var.zone_id
   name    = "_amazonses.${local.mail_domain}"
   type    = "TXT"
   ttl     = "600"
@@ -174,7 +174,7 @@ resource "aws_route53_record" "verification_record" {
 
 resource "aws_route53_record" "dkim_record" {
   count   = 3
-  zone_id = var.zone.id
+  zone_id = var.zone_id
   name    = "${element(aws_ses_domain_dkim.dkim.dkim_tokens, count.index)}._domainkey.${local.mail_domain}"
   type    = "CNAME"
   ttl     = "600"
